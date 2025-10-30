@@ -7,20 +7,21 @@ const {
   updateBudget,
   deleteBudget,
 } = require('../controllers/budgetController');
+const auth = require('../middleware/auth');
 
 // GET /api/budgets - Get all budgets
-router.get('/', getBudgets);
+router.get('/', auth, getBudgets);
 
 // GET /api/budgets/:id - Get single budget
-router.get('/:id', getBudget);
+router.get('/:id', auth, getBudget);
 
 // POST /api/budgets - Create new budget
-router.post('/', createBudget);
+router.post('/', auth, createBudget);
 
 // PUT /api/budgets/:id - Update budget
-router.put('/:id', updateBudget);
+router.put('/:id', auth, updateBudget);
 
 // DELETE /api/budgets/:id - Delete budget
-router.delete('/:id', deleteBudget);
+router.delete('/:id', auth, deleteBudget);
 
 module.exports = router;

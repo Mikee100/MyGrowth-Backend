@@ -7,20 +7,21 @@ const {
   updateDebt,
   deleteDebt,
 } = require('../controllers/debtController');
+const auth = require('../middleware/auth');
 
 // GET /api/debts - Get all debts
-router.get('/', getDebts);
+router.get('/', auth, getDebts);
 
 // GET /api/debts/:id - Get single debt
-router.get('/:id', getDebt);
+router.get('/:id', auth, getDebt);
 
 // POST /api/debts - Create new debt
-router.post('/', createDebt);
+router.post('/', auth, createDebt);
 
 // PUT /api/debts/:id - Update debt
-router.put('/:id', updateDebt);
+router.put('/:id', auth, updateDebt);
 
 // DELETE /api/debts/:id - Delete debt
-router.delete('/:id', deleteDebt);
+router.delete('/:id', auth, deleteDebt);
 
 module.exports = router;

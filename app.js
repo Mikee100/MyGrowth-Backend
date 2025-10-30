@@ -3,12 +3,14 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 // Import routes
+const authRoutes = require('./routes/authRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const goalRoutes = require('./routes/goalRoutes');
 const habitRoutes = require('./routes/habitRoutes');
 const userRoutes = require('./routes/userRoutes');
 const debtRoutes = require('./routes/debtRoutes');
 const budgetRoutes = require('./routes/budgetRoutes');
+const sexLifeEventRoutes = require('./routes/sexLifeEventRoutes');
 
 const app = express();
 
@@ -18,12 +20,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/goals', goalRoutes);
 app.use('/api/habits', habitRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/debts', debtRoutes);
 app.use('/api/budgets', budgetRoutes);
+app.use('/api/sex-life-events', sexLifeEventRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const habitSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserProfile',
+    required: true,
+  },
   name: {
     type: String,
     required: true,

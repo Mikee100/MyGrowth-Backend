@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const debtSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserProfile',
+    required: true,
+  },
   type: {
     type: String,
     enum: ['loan', 'credit_card', 'mortgage', 'personal', 'other'],

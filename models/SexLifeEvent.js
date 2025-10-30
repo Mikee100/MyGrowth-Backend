@@ -1,39 +1,36 @@
 const mongoose = require('mongoose');
 
-const goalSchema = new mongoose.Schema({
+const sexLifeEventSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'UserProfile',
+    required: true,
+  },
+  date: {
+    type: String,
     required: true,
   },
   title: {
     type: String,
     required: true,
   },
-  description: {
+  notes: {
     type: String,
     default: '',
   },
-  targetAmount: {
+  rating: {
     type: Number,
     required: true,
-    min: 0,
+    min: 1,
+    max: 10,
   },
-  currentAmount: {
-    type: Number,
-    default: 0,
-    min: 0,
-  },
-  targetDate: {
-    type: Date,
+  tag: {
+    type: String,
     required: true,
-  },
-  completed: {
-    type: Boolean,
-    default: false,
+    enum: ['Romantic', 'Spontaneous', 'Outdoor', 'Anniversary', 'Adventure', 'Other'],
   },
 }, {
   timestamps: true,
 });
 
-module.exports = mongoose.model('Goal', goalSchema);
+module.exports = mongoose.model('SexLifeEvent', sexLifeEventSchema);

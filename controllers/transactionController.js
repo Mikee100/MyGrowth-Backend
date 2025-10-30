@@ -3,7 +3,7 @@ const Transaction = require('../models/Transaction');
 // Get all transactions
 exports.getAllTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find().sort({ date: -1 });
+    const transactions = await Transaction.find({ userId: req.user._id }).sort({ date: -1 });
     res.status(200).json(transactions);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -25,7 +25,10 @@ exports.getTransaction = async (req, res) => {
 
 // Create transaction
 exports.createTransaction = async (req, res) => {
-  const transaction = new Transaction(req.body);
+  const transaction = new Transaction({
+    ...req.body,
+    userId: req.user._id,
+  });
   try {
     const savedTransaction = await transaction.save();
     res.status(201).json(savedTransaction);

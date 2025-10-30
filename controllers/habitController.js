@@ -3,7 +3,7 @@ const Habit = require('../models/Habit');
 // Get all habits
 exports.getAllHabits = async (req, res) => {
   try {
-    const habits = await Habit.find().sort({ createdAt: -1 });
+    const habits = await Habit.find({ userId: req.user._id }).sort({ createdAt: -1 });
     res.status(200).json(habits);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -34,6 +34,7 @@ exports.createHabit = async (req, res) => {
 
     const habitData = {
       ...req.body,
+      userId: req.user._id,
       streak: initialStreak,
       lastCheckDate: startDate, // Set last check date to start date
     };

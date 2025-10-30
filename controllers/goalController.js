@@ -3,7 +3,7 @@ const Goal = require('../models/Goal');
 // Get all goals
 exports.getAllGoals = async (req, res) => {
   try {
-    const goals = await Goal.find().sort({ createdAt: -1 });
+    const goals = await Goal.find({ userId: req.user._id }).sort({ createdAt: -1 });
     res.status(200).json(goals);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -25,7 +25,10 @@ exports.getGoal = async (req, res) => {
 
 // Create goal
 exports.createGoal = async (req, res) => {
-  const goal = new Goal(req.body);
+  const goal = new Goal({
+    ...req.body,
+    userId: req.user._id,
+  });
   try {
     const savedGoal = await goal.save();
     res.status(201).json(savedGoal);

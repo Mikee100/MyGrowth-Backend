@@ -3,7 +3,7 @@ const Debt = require('../models/Debt');
 // Get all debts
 const getDebts = async (req, res) => {
   try {
-    const debts = await Debt.find().sort({ createdAt: -1 });
+    const debts = await Debt.find({ userId: req.user._id }).sort({ createdAt: -1 });
     res.status(200).json(debts);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -26,7 +26,10 @@ const getDebt = async (req, res) => {
 // Create debt
 const createDebt = async (req, res) => {
   try {
-    const debt = new Debt(req.body);
+    const debt = new Debt({
+      ...req.body,
+      userId: req.user._id,
+    });
     const savedDebt = await debt.save();
     res.status(201).json(savedDebt);
   } catch (error) {

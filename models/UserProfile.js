@@ -12,6 +12,24 @@ const userProfileSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
   },
+  password: {
+    type: String,
+    required: function() {
+      return !this.googleId; // Password required only if not using Google OAuth
+    },
+  },
+  googleId: {
+    type: String,
+    sparse: true, // Allows multiple null values but unique non-null values
+  },
+  sexLifePin: {
+    type: String,
+    default: null,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
 });
