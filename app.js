@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const passport = require('./config/passport');
+const session = require('express-session');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
@@ -11,6 +13,7 @@ const userRoutes = require('./routes/userRoutes');
 const debtRoutes = require('./routes/debtRoutes');
 const budgetRoutes = require('./routes/budgetRoutes');
 const sexLifeEventRoutes = require('./routes/sexLifeEventRoutes');
+const achievementRoutes = require('./routes/achievementRoutes');
 
 const app = express();
 
@@ -18,6 +21,19 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Session middleware for Passport
+app.use(
+  session({
+    secret: process.env.JWT_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -28,6 +44,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/debts', debtRoutes);
 app.use('/api/budgets', budgetRoutes);
 app.use('/api/sex-life-events', sexLifeEventRoutes);
+app.use('/api/achievements', achievementRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

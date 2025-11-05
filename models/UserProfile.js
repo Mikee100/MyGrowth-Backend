@@ -30,6 +30,22 @@ const userProfileSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  resetPasswordToken: {
+    type: String,
+    default: null,
+  },
+  resetPasswordExpires: {
+    type: Date,
+    default: null,
+  },
+  achievements: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Achievement',
+  }],
+  points: {
+    type: Number,
+    default: 0,
+  },
 }, {
   timestamps: true,
 });

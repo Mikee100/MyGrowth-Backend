@@ -1,4 +1,6 @@
 const Habit = require('../models/Habit');
+const Achievement = require('../models/Achievement');
+const UserProfile = require('../models/UserProfile');
 
 // Get all habits
 exports.getAllHabits = async (req, res) => {
@@ -58,6 +60,12 @@ exports.updateHabit = async (req, res) => {
     if (!updatedHabit) {
       return res.status(404).json({ message: 'Habit not found' });
     }
+
+    // Check for achievements if habit streak increases
+    if (req.body.streak && req.body.streak > 0) {
+      await checkAndAwardHabitAchievements(req.user._id);
+    }
+
     res.status(200).json(updatedHabit);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -74,5 +82,36 @@ exports.deleteHabit = async (req, res) => {
     res.status(200).json({ message: 'Habit deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// Helper function to check and award habit achievements
+const checkAndAwardHabitAchievements = async (userId) => {
+  try {
+    const user = await UserProfile.findById(userId).populate('achievements');
+    const habits = await Habit.find({ userId });
+    const maxStreak = Math.max(...habits.map(h => h.streak), 0);
+
+    // Define habit achievements
+    const achievementsToCheck = [
+      { criteria: 'habit_streak_7', name: 'Week Warrior', description: 'Maintain a 7-day habit streak', condition: maxStreak >= 7 },
+      { criteria: 'habit_streak_30', name: 'Month Master', description: 'Maintain a 30-day habit streak', condition: maxStreak >= 30 },
+      { criteria: 'habit_streak_100', name: 'Century Champion', description: 'Maintain a 100-day habit streak', condition: maxStreak >= 100 },
+    ];
+
+    for (const ach of achievementsToCheck) {
+      const existing = user.achievements.find(a => a.criteria === ach.criteria);
+      if (!existing && ach.condition) {
+        const achievement = await Achievement.findOne({ criteria: ach.criteria });
+        if (achievement) {
+          user.achievements.push(achievement._id);
+          user.points += achievement.points;
+        }
+      }
+    }
+
+    await user.save();
+  } catch (error) {
+    console.error('Error checking habit achievements:', error);
   }
 };
